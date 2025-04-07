@@ -9,8 +9,8 @@ def update_exif_date(file_path):
     parts = base_name.split(' ')
     date_part = parts[2]
     time_part = parts[4][:8].replace('.', ':') #.replace('.jpeg', '')
-    print(f"Date part: {date_part}")
-    print(f"Time part: {time_part}")
+    # print(f"Date part: {date_part}")
+    # print(f"Time part: {time_part}")
 
     # Combine date and time
     date_time_str = f"{date_part} {time_part}"
@@ -32,17 +32,30 @@ def update_exif_date(file_path):
     img.save(file_path, "jpeg", exif=exif_bytes)
 
 def process_folder(folder_path):
+    image_paths = []
+    supported_extensions = ('.jpeg', '.jpg', '.tiff', '.png')  # Add more if needed
+
     for filename in os.listdir(folder_path):
-        if filename.startswith("WhatsApp Image") and filename.endswith(".jpeg"):
+        if filename.lower().endswith(supported_extensions):
             file_path = os.path.join(folder_path, filename)
-            # print(f"Processing {filename}")
+            image_paths.append(file_path)
+    
+    print(f"Total image files found: {len(image_paths)}")
+
+    for path in image_paths:
+        try:
             update_exif_date(file_path)
             print(f"Updated EXIF date for {filename}")
+        except Exception as e:
+            print(f"Failed to update {filename}: {e}")
+
 
 
 def main():
-    print("starting from exifrename!")
-    folder_path = "/Users/andrei/Downloads/2024-06 Voltadag/test"
+    print("starting exifrename!")
+    folder_path = input("Please enter the path to your folder: ")
+    # folder_path = "/Users/andrei/Downloads/2024-06 Voltadag/whatsapp"
+    print(f"Processing {folder_path}")
     process_folder(folder_path) 
 
 
